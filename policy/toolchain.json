@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "rust": "1.97.1",
+  "edition": "2024",
+  "linux_target": "x86_64-unknown-linux-gnu",
+  "windows_target": "x86_64-pc-windows-gnu",
+  "linux_backend": "Vulkan",
+  "windows_backend": "D3D12",
+  "sdl_major": 3,
+  "devcontainer_contract": "atrinik/devcontainer:toolchains.json",
+  "required_tools": {"syft": "1.50.0", "trivy": "0.73.0"}
+}

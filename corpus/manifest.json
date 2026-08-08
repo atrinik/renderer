@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "provenance": "new synthetic MIT fixture; no classic or third-party visual source",
+  "failure_cases": [
+    {"name": "missing-resource", "expected": "NotFound", "owner": "renderer"},
+    {"name": "digest-mismatch", "expected": "DigestMismatch", "owner": "renderer"},
+    {"name": "corrupt-texture-envelope", "expected": "InvalidFormat", "owner": "renderer"},
+    {"name": "oversized-resource", "expected": "LimitExceeded", "owner": "renderer"}
+  ],
+  "cases": [
+    {
+      "name": "overlap-square",
+      "width": 16,
+      "height": 16,
+      "clock_millis": 375,
+      "maximum_rgba_channel_difference": 1,
+      "performance": {
+        "maximum_cpu_micros": 50000,
+        "sprite_count": 3,
+        "resource_requests": 1,
+        "uploaded_bytes": 16,
+        "vertex_count": 18,
+        "vertex_allocation_bytes": 720,
+        "target_allocation_bytes": 2816
+      },
+      "digests": {
+        "rgba8": "194311d3e2dde38b4f2fc8bd18d2d594756afc2dcfba801f73bcd1f1827dc9d0",
+        "semantic_u32le": "5ecc5127ab88fb12d9404e6fe0f5b05d8d3f84c674ff5d4fa3dfbc0d441785c3",
+        "depth_i16le": "3c32e1e76573eceee41b5138dd64cdc4ddd2277a4f74c6d6a7462ced8731d809",
+        "coverage_u8": "aab1831eb85c216dc953b538908fe3639f18abb017bc54ee92f01d484e6f9443"
+      }
+    },
+    {
+      "name": "unaligned-wide",
+      "width": 31,
+      "height": 17,
+      "clock_millis": 375,
+      "maximum_rgba_channel_difference": 1,
+      "performance": {
+        "maximum_cpu_micros": 50000,
+        "sprite_count": 3,
+        "resource_requests": 1,
+        "uploaded_bytes": 16,
+        "vertex_count": 18,
+        "vertex_allocation_bytes": 720,
+        "target_allocation_bytes": 5797
+      },
+      "digests": {
+        "rgba8": "7da5c171111d2a12635fbd1b686c9a749d4487205872f20e50bf02504017b5d4",
+        "semantic_u32le": "34f65d3695540319ae1537ef718b9b934018216c8022ae61046ca9f0b121e33a",
+        "depth_i16le": "cc2d31d2c992fa80f719dd1903a3886ea938e71b1d66f11b4ec413428b4571cf",
+        "coverage_u8": "32b03bb7dd9336f16aa57596acbf478dc5584b8add94797651ce34b2aef0d700"
+      }
+    },
+    {
+      "name": "structural-fog-ui",
+      "width": 48,
+      "height": 48,
+      "clock_millis": 375,
+      "maximum_rgba_channel_difference": 1,
+      "performance": {
+        "maximum_cpu_micros": 75000,
+        "sprite_count": 11,
+        "resource_requests": 1,
+        "uploaded_bytes": 16,
+        "vertex_count": 66,
+        "vertex_allocation_bytes": 2640,
+        "target_allocation_bytes": 25344
+      },
+      "digests": {
+        "rgba8": "f53a34e54400778780fa7469f599ccddb914a6a8dd3e5b6fd26ac339d8482d09",
+        "semantic_u32le": "57b10d8204cdd4345f322e39edf24cd358732153681fb89da1e8b4e3170ed152",
+        "depth_i16le": "89e304f7a8221258d0db2652f6ab9919b8f220f48afd2981e078e80b07cb6c1e",
+        "coverage_u8": "aed6e99b4de796800126bc3b12282188910a6f418f5ded4d74a81bc98fcc219d"
+      }
+    },
+    {
+      "name": "high-density-1024",
+      "width": 128,
+      "height": 128,
+      "clock_millis": 375,
+      "maximum_rgba_channel_difference": 1,
+      "performance": {
+        "maximum_cpu_micros": 250000,
+        "sprite_count": 1024,
+        "resource_requests": 1,
+        "uploaded_bytes": 16,
+        "vertex_count": 6144,
+        "vertex_allocation_bytes": 245760,
+        "target_allocation_bytes": 180224
+      },
+      "digests": {
+        "rgba8": "d5aef2e9bb0f12b3a26ed009499d7aab63cdcc39780b6f589ebf507eaf8c4bc0",
+        "semantic_u32le": "f2db51975d40f7cf739213139c61b978e76a79cb53d5cab083e668c4ce6bba88",
+        "depth_i16le": "7813dbe07e40f1d543ac31832c0f72b063ef50716ab615f284a4575ba9589024",
+        "coverage_u8": "a81f52b8cdae6907d00094aac5edc056251c9976d5ebe7f923d365eea4c0b120"
+      }
+    }
+  ]
+}

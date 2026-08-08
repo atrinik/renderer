@@ -1,0 +1,16 @@
+[package]
+name = "atrinik-render-api"
+description = "Renderer-neutral target, lifecycle, and frame contracts for Atrinik"
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+
+[dependencies]
+atrinik-render-resources.workspace = true
+atrinik-scene.workspace = true
+
+[lints]
+workspace = true

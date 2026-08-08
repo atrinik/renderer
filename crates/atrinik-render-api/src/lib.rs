@@ -67,6 +67,14 @@ pub struct RecoveryMetrics {
     pub surface_reconfigurations: u64,
     pub device_recoveries: u64,
     pub skipped_frames: u64,
+    pub frames_submitted: u64,
+    pub resource_requests: u64,
+    pub uploaded_bytes: u64,
+    pub vertex_count: u64,
+    pub vertex_allocation_bytes: u64,
+    pub target_allocation_bytes: u64,
+    pub readback_bytes: u64,
+    pub frame_cpu_micros: u64,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -132,7 +140,8 @@ pub enum Error {
     InvalidTarget,
     InvalidFrame,
     LimitExceeded,
-    BackendUnavailable,
+    BackendUnavailable(String),
+    SurfaceUnavailable,
     SurfaceLost,
     DeviceLost,
     Resource(String),
@@ -149,7 +158,10 @@ impl std::error::Error for Error {}
 
 #[cfg(test)]
 mod tests {
-    use super::{Error, FrameOutput, RecoveryMetrics};
+    use super::{
+        BackendPreference, Error, FrameOutput, RecoveryMetrics, TargetDescriptor, TargetKind,
+        TargetLimits,
+    };
 
     #[test]
     fn frame_planes_must_match_dimensions() {
@@ -166,5 +178,19 @@ mod tests {
         let mut invalid = frame;
         invalid.rgba8.pop();
         assert_eq!(invalid.validate(), Err(Error::InvalidFrame));
+    }
+
+    #[test]
+    fn target_pixel_budget_is_independent_of_axis_limit() {
+        let target = TargetDescriptor {
+            kind: TargetKind::Offscreen,
+            width: 8_192,
+            height: 8_192,
+            backend: BackendPreference::Automatic,
+        };
+        assert_eq!(
+            target.validate(TargetLimits::default()),
+            Err(Error::InvalidTarget)
+        );
     }
 }

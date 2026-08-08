@@ -1,5 +1,6 @@
 [package]
 name = "atrinik-render-ui"
+description = "Renderer-neutral UI and typography seam for Atrinik"
 authors.workspace = true
 edition.workspace = true
 license.workspace = true

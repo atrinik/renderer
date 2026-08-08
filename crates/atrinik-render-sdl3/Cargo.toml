@@ -1,5 +1,6 @@
 [package]
 name = "atrinik-render-sdl3"
+description = "Thin SDL3 native-surface adapter for the Atrinik renderer"
 authors.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -9,7 +10,7 @@ version.workspace = true
 
 [dependencies]
 atrinik-render-api.workspace = true
-pollster.workspace = true
+atrinik-render-wgpu.workspace = true
 sdl3.workspace = true
 wgpu.workspace = true
 

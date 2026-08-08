@@ -20,7 +20,7 @@ git archive --format=tar --prefix="atrinik-renderer-${version}/" HEAD \
 
 cargo package --locked --offline --workspace --allow-dirty
 cp "${target_directory}"/package/*.crate "${output}/crates/"
-cargo build --locked --release --package atrinik-render
+cargo build --locked --release --package atrinik-render --features sdl3
 cp "${target_directory}/release/atrinik-render" "${output}/"
 cp -R corpus "${output}/"
 cp LICENSE PROVENANCE.md THIRD_PARTY_NOTICES.md "${output}/"

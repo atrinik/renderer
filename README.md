@@ -20,13 +20,18 @@ cargo build --locked --workspace
 cargo test --locked --workspace --all-targets
 cargo run --locked --package atrinik-render -- --version
 cargo run --locked --package atrinik-render -- probe
+cargo run --locked --package atrinik-render -- corpus
+SDL_VIDEO_DRIVER=x11 xvfb-run -a -s '-screen 0 1024x768x24' \
+  cargo run --locked --package atrinik-render --features sdl3 -- window
 tools/validate.sh
 ```
 
 `tools/validate.sh` runs formatting, strict Clippy, unit/doc tests, shader
 validation, dependency/architecture/provenance policy, deterministic corpus
 comparison, Linux Vulkan offscreen proof, Windows/D3D12 cross-check, release
-build, SBOM creation, and a release dry run.
+build, SBOM creation, and a release dry run. The SDL bridge is an explicit
+`sdl3` feature so the default proof CLI remains portable to the native Windows
+toolchain while Linux validation exercises a real window under Xvfb.
 
 ## Offscreen proof
 

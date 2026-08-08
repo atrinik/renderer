@@ -1,5 +1,6 @@
 [package]
 name = "atrinik-render-testkit"
+description = "Deterministic renderer doubles and conformance scenes for Atrinik"
 authors.workspace = true
 edition.workspace = true
 license.workspace = true

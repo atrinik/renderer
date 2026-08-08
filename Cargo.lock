@@ -37,6 +37,7 @@ name = "atrinik-render"
 version = "0.1.0"
 dependencies = [
  "atrinik-render-api",
+ "atrinik-render-sdl3",
  "atrinik-render-testkit",
  "atrinik-render-wgpu",
  "tempfile",
@@ -55,6 +56,7 @@ name = "atrinik-render-resources"
 version = "0.1.0"
 dependencies = [
  "atrinik-scene",
+ "sha2",
 ]
 
 [[package]]
@@ -62,7 +64,7 @@ name = "atrinik-render-sdl3"
 version = "0.1.0"
 dependencies = [
  "atrinik-render-api",
- "pollster",
+ "atrinik-render-wgpu",
  "sdl3",
  "wgpu",
 ]
@@ -89,6 +91,7 @@ name = "atrinik-render-wgpu"
 version = "0.1.0"
 dependencies = [
  "atrinik-render-api",
+ "atrinik-render-resources",
  "atrinik-render-testkit",
  "atrinik-scene",
  "bytemuck",

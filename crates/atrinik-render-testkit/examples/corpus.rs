@@ -3,23 +3,35 @@
 
 use atrinik_render_api::{RenderRequest, Renderer};
 use atrinik_render_testkit::{
-    FakeResourceProvider, ReferenceRenderer, offscreen_target, synthetic_scene,
+    ReferenceRenderer, dense_scene, offscreen_target, structural_scene, synthetic_provider,
+    synthetic_scene,
 };
 use sha2::{Digest, Sha256};
-use std::{fmt::Write as _, sync::Arc};
+use std::{fmt::Write as _, time::Instant};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("{{\"schema_version\":1,\"cases\":[");
-    for (index, (name, width, height)) in [("overlap-square", 16, 16), ("unaligned-wide", 31, 17)]
-        .into_iter()
-        .enumerate()
-    {
-        let scene = synthetic_scene(width, height)?;
-        let frame =
-            ReferenceRenderer::new(offscreen_target(width, height))?.render(RenderRequest {
+    let cases = [
+        ("overlap-square", synthetic_scene(16, 16)?, 50_000_u64),
+        ("unaligned-wide", synthetic_scene(31, 17)?, 50_000),
+        ("structural-fog-ui", structural_scene(48, 48)?, 75_000),
+        ("high-density-1024", dense_scene(128, 128)?, 250_000),
+    ];
+    for (index, (name, scene, maximum_cpu_micros)) in cases.into_iter().enumerate() {
+        let viewport = scene.viewport();
+        let started = Instant::now();
+        let frame = ReferenceRenderer::new(offscreen_target(viewport.width, viewport.height))?
+            .render(RenderRequest {
                 scene: &scene,
-                resources: Arc::new(FakeResourceProvider::default()),
+                resources: synthetic_provider()?,
             })?;
+        let elapsed_micros = u64::try_from(started.elapsed().as_micros()).unwrap_or(u64::MAX);
+        if elapsed_micros > maximum_cpu_micros {
+            return Err(format!(
+                "scenario {name} exceeded CPU budget: {elapsed_micros} > {maximum_cpu_micros} microseconds"
+            )
+            .into());
+        }
         let semantic = frame
             .semantic_ids
             .iter()
@@ -31,12 +43,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .flat_map(|value| value.to_le_bytes())
             .collect::<Vec<_>>();
         println!(
-            "{}{{\"name\":\"{}\",\"width\":{},\"height\":{},\"clock_millis\":{},\"maximum_rgba_channel_difference\":1,\"digests\":{{\"rgba8\":\"{}\",\"semantic_u32le\":\"{}\",\"depth_i16le\":\"{}\",\"coverage_u8\":\"{}\"}}}}",
+            "{}{{\"name\":\"{}\",\"width\":{},\"height\":{},\"clock_millis\":{},\"maximum_rgba_channel_difference\":1,\"performance\":{{\"maximum_cpu_micros\":{},\"sprite_count\":{},\"resource_requests\":{},\"uploaded_bytes\":{},\"vertex_count\":{},\"vertex_allocation_bytes\":{},\"target_allocation_bytes\":{}}},\"digests\":{{\"rgba8\":\"{}\",\"semantic_u32le\":\"{}\",\"depth_i16le\":\"{}\",\"coverage_u8\":\"{}\"}}}}",
             if index == 0 { "" } else { "," },
             name,
-            width,
-            height,
+            viewport.width,
+            viewport.height,
             scene.clock_millis(),
+            maximum_cpu_micros,
+            scene.sprites().len(),
+            frame.metrics.resource_requests,
+            frame.metrics.uploaded_bytes,
+            frame.metrics.vertex_count,
+            frame.metrics.vertex_allocation_bytes,
+            frame.metrics.target_allocation_bytes,
             digest(&frame.rgba8),
             digest(&semantic),
             digest(&depth),

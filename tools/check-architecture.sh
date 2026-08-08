@@ -7,7 +7,7 @@ cd "${repository}"
 metadata=$(mktemp /tmp/atrinik-renderer-architecture.XXXXXX)
 actual=$(mktemp /tmp/atrinik-renderer-dependencies.XXXXXX)
 trap 'rm -f -- "${metadata}" "${actual}"' EXIT
-cargo metadata --locked --offline --format-version 1 >"${metadata}"
+cargo metadata --locked --offline --all-features --format-version 1 >"${metadata}"
 
 jq -S '
   . as $metadata

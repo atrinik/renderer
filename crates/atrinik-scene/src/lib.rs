@@ -271,4 +271,22 @@ mod tests {
         .unwrap_err();
         assert_eq!(error, super::Error::DuplicateSemanticId);
     }
+
+    #[test]
+    fn rejects_viewport_above_total_pixel_budget() {
+        let error = SceneBundle::new(
+            1,
+            0,
+            Viewport {
+                width: 8_192,
+                height: 8_192,
+                scale_milli: 1000,
+            },
+            [0.0, 0.0, 0.0, 1.0],
+            [],
+            SceneLimits::default(),
+        )
+        .unwrap_err();
+        assert_eq!(error, super::Error::InvalidValue);
+    }
 }

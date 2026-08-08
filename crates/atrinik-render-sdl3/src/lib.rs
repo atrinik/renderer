@@ -1,10 +1,11 @@
 // Copyright 2026 The Atrinik Project
 // SPDX-License-Identifier: MIT
 
-//! Thin SDL3/wgpu presentation bridge. It owns no scene, resources, event loop,
-//! or renderer policy and must be called on the SDL video thread.
+//! Thin SDL3 presentation adapter. It owns no scene, resources, event loop,
+//! input policy, or GPU device and must be called on SDL's video thread.
 
-use atrinik_render_api::TargetKind;
+use atrinik_render_api::{RecoveryMetrics, RenderRequest, Renderer, TargetKind};
+use atrinik_render_wgpu::WgpuRenderer;
 use sdl3::video::Window;
 use std::fmt;
 
@@ -15,173 +16,83 @@ pub struct PresentationProof {
     pub adapter_name: String,
     pub backend: String,
     pub format: String,
+    pub reconfigured: bool,
+    pub metrics: RecoveryMetrics,
 }
 
-/// Creates a resizable SDL window and presents one hardware frame through the
-/// same bridge used by an embedded caller-provided SDL window.
-pub fn present_window(width: u32, height: u32) -> Result<PresentationProof, Error> {
-    if width == 0 || height == 0 {
+/// Creates a resizable SDL proof window and presents the supplied scene twice
+/// through the caller's existing renderer device. The second presentation
+/// exercises target, pipeline, texture, and vertex-cache reuse.
+///
+/// # Errors
+/// Returns an SDL, target, resource, surface, or renderer error.
+pub fn present_window(
+    renderer: &mut WgpuRenderer,
+    request: RenderRequest<'_>,
+) -> Result<PresentationProof, Error> {
+    if renderer.target().kind != TargetKind::Window {
         return Err(Error::InvalidTarget);
     }
+    let target = renderer.target();
     let sdl = sdl3::init().map_err(|error| Error::Sdl(error.to_string()))?;
     let video = sdl.video().map_err(|error| Error::Sdl(error.to_string()))?;
     let window = video
-        .window("Atrinik renderer proof", width, height)
+        .window("Atrinik renderer proof", target.width, target.height)
         .position_centered()
         .resizable()
         .build()
         .map_err(|error| Error::Sdl(error.to_string()))?;
-    present_existing(&window, TargetKind::Window)
+    present_existing(renderer, &window, request.clone())?;
+    present_existing(renderer, &window, request)
 }
 
-/// Presents one frame into a caller-owned SDL window. The borrow prevents the
-/// native surface from outliving its window.
-pub fn present_existing(window: &Window, kind: TargetKind) -> Result<PresentationProof, Error> {
-    if !matches!(kind, TargetKind::Window | TargetKind::Embedded) {
+/// Presents the supplied scene into a caller-owned SDL window. The native
+/// surface borrow cannot outlive the window and the existing renderer retains
+/// sole device/queue ownership.
+///
+/// # Errors
+/// Returns a target error when pixel dimensions differ, or a typed renderer
+/// error when resource resolution, surface acquisition, or presentation fails.
+pub fn present_existing(
+    renderer: &mut WgpuRenderer,
+    window: &Window,
+    request: RenderRequest<'_>,
+) -> Result<PresentationProof, Error> {
+    if !matches!(
+        renderer.target().kind,
+        TargetKind::Window | TargetKind::Embedded
+    ) {
         return Err(Error::InvalidTarget);
     }
     let (width, height) = window.size_in_pixels();
-    if width == 0 || height == 0 {
+    if width != renderer.target().width || height != renderer.target().height {
         return Err(Error::InvalidTarget);
     }
-    let instance =
-        wgpu::Instance::new(wgpu::InstanceDescriptor::new_without_display_handle_from_env());
-    let surface = raw_handle_bridge::create_surface(&instance, window).map_err(Error::Wgpu)?;
-    let adapter = pollster::block_on(instance.request_adapter(&wgpu::RequestAdapterOptions {
-        power_preference: wgpu::PowerPreference::HighPerformance,
-        force_fallback_adapter: false,
-        compatible_surface: Some(&surface),
-        apply_limit_buckets: false,
-    }))
-    .map_err(|error| Error::Wgpu(error.to_string()))?;
-    let (device, queue) = pollster::block_on(adapter.request_device(&wgpu::DeviceDescriptor {
-        label: Some("Atrinik SDL presentation device"),
-        required_features: wgpu::Features::empty(),
-        required_limits: wgpu::Limits::downlevel_defaults(),
-        memory_hints: wgpu::MemoryHints::Performance,
-        experimental_features: wgpu::ExperimentalFeatures::disabled(),
-        trace: wgpu::Trace::Off,
-    }))
-    .map_err(|error| Error::Wgpu(error.to_string()))?;
-    let capabilities = surface.get_capabilities(&adapter);
-    let format = capabilities
-        .formats
-        .iter()
-        .copied()
-        .find(wgpu::TextureFormat::is_srgb)
-        .or_else(|| capabilities.formats.first().copied())
-        .ok_or_else(|| Error::Wgpu("surface exposes no formats".to_owned()))?;
-    let present_mode = if capabilities
-        .present_modes
-        .contains(&wgpu::PresentMode::Fifo)
-    {
-        wgpu::PresentMode::Fifo
-    } else {
-        *capabilities
-            .present_modes
-            .first()
-            .ok_or_else(|| Error::Wgpu("surface exposes no presentation modes".to_owned()))?
-    };
-    let alpha_mode = *capabilities
-        .alpha_modes
-        .first()
-        .ok_or_else(|| Error::Wgpu("surface exposes no alpha modes".to_owned()))?;
-    surface.configure(
-        &device,
-        &wgpu::SurfaceConfiguration {
-            usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
-            format,
-            color_space: wgpu::SurfaceColorSpace::Auto,
-            width,
-            height,
-            present_mode,
-            alpha_mode,
-            view_formats: Vec::new(),
-            desired_maximum_frame_latency: 2,
-        },
-    );
-    let frame = match surface.get_current_texture() {
-        wgpu::CurrentSurfaceTexture::Success(frame)
-        | wgpu::CurrentSurfaceTexture::Suboptimal(frame) => frame,
-        wgpu::CurrentSurfaceTexture::Timeout | wgpu::CurrentSurfaceTexture::Occluded => {
-            return Err(Error::TransientSurface);
-        }
-        wgpu::CurrentSurfaceTexture::Outdated | wgpu::CurrentSurfaceTexture::Lost => {
-            surface.configure(
-                &device,
-                &wgpu::SurfaceConfiguration {
-                    usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
-                    format,
-                    color_space: wgpu::SurfaceColorSpace::Auto,
-                    width,
-                    height,
-                    present_mode,
-                    alpha_mode,
-                    view_formats: Vec::new(),
-                    desired_maximum_frame_latency: 2,
-                },
-            );
-            return Err(Error::ReconfiguredSurface);
-        }
-        other => {
-            return Err(Error::Wgpu(format!(
-                "surface acquisition failed: {other:?}"
-            )));
-        }
-    };
-    let view = frame
-        .texture
-        .create_view(&wgpu::TextureViewDescriptor::default());
-    let mut encoder = device.create_command_encoder(&wgpu::CommandEncoderDescriptor {
-        label: Some("Atrinik SDL proof encoder"),
-    });
-    {
-        let _pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
-            label: Some("Atrinik SDL proof pass"),
-            color_attachments: &[Some(wgpu::RenderPassColorAttachment {
-                view: &view,
-                depth_slice: None,
-                resolve_target: None,
-                ops: wgpu::Operations {
-                    load: wgpu::LoadOp::Clear(wgpu::Color {
-                        r: 0.02,
-                        g: 0.03,
-                        b: 0.05,
-                        a: 1.0,
-                    }),
-                    store: wgpu::StoreOp::Store,
-                },
-            })],
-            depth_stencil_attachment: None,
-            timestamp_writes: None,
-            occlusion_query_set: None,
-            multiview_mask: None,
-        });
-    }
-    queue.submit(Some(encoder.finish()));
-    queue.present(frame);
-    let info = adapter.get_info();
+    let presentation = renderer
+        .present_surface(raw_handle_bridge::BorrowedHandle(window), &request)
+        .map_err(|error| Error::Renderer(error.to_string()))?;
+    let adapter = renderer.adapter();
     Ok(PresentationProof {
-        width,
-        height,
-        adapter_name: info.name,
-        backend: format!("{:?}", info.backend),
-        format: format!("{format:?}"),
+        width: presentation.width,
+        height: presentation.height,
+        adapter_name: adapter.name.clone(),
+        backend: adapter.backend.clone(),
+        format: presentation.format,
+        reconfigured: presentation.reconfigured,
+        metrics: renderer.metrics(),
     })
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Error {
     InvalidTarget,
-    TransientSurface,
-    ReconfiguredSurface,
     Sdl(String),
-    Wgpu(String),
+    Renderer(String),
 }
 
 impl fmt::Display for Error {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(formatter, "SDL renderer bridge error: {self:?}")
+        write!(formatter, "SDL renderer adapter error: {self:?}")
     }
 }
 
@@ -195,7 +106,7 @@ mod raw_handle_bridge {
     /// requires a Send + Sync handle source even though it copies the handles
     /// during this synchronous call. This wrapper never escapes the call, and
     /// the returned surface retains the original Window borrow.
-    struct BorrowedHandle<'a>(&'a Window);
+    pub(super) struct BorrowedHandle<'a>(pub(super) &'a Window);
 
     // SAFETY: the wrapper is constructed and consumed on the SDL video thread,
     // never shared or stored, and only delegates immutable raw-handle access.
@@ -213,14 +124,5 @@ mod raw_handle_bridge {
         fn display_handle(&self) -> Result<wgpu::rwh::DisplayHandle<'_>, wgpu::rwh::HandleError> {
             self.0.display_handle()
         }
-    }
-
-    pub fn create_surface<'a>(
-        instance: &wgpu::Instance,
-        window: &'a Window,
-    ) -> Result<wgpu::Surface<'a>, String> {
-        instance
-            .create_surface(BorrowedHandle(window))
-            .map_err(|error| error.to_string())
     }
 }

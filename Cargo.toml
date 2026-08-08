@@ -31,7 +31,7 @@ atrinik-scene = { path = "crates/atrinik-scene", version = "=0.1.0" }
 bytemuck = { version = "=1.25.2", features = ["derive"] }
 naga = { version = "=30.0.0", features = ["wgsl-in"] }
 pollster = "=1.0.1"
-sdl3 = { version = "=0.18.4", features = ["raw-window-handle", "use-pkg-config"] }
+sdl3 = { version = "=0.18.4", default-features = false, features = ["build-from-source-static", "raw-window-handle"] }
 sha2 = "=0.10.9"
 tempfile = "=3.27.0"
 wgpu = { version = "=30.0.0", default-features = false, features = ["std", "dx12", "vulkan", "wgsl"] }

@@ -1,0 +1,22 @@
+[package]
+name = "atrinik-render-wgpu"
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+
+[dependencies]
+atrinik-render-api.workspace = true
+atrinik-scene.workspace = true
+bytemuck.workspace = true
+pollster.workspace = true
+wgpu.workspace = true
+
+[dev-dependencies]
+atrinik-render-testkit.workspace = true
+naga.workspace = true
+
+[lints]
+workspace = true

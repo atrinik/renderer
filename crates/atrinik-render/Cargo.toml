@@ -1,0 +1,17 @@
+[package]
+name = "atrinik-render"
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+
+[dependencies]
+atrinik-render-api.workspace = true
+atrinik-render-testkit.workspace = true
+atrinik-render-wgpu.workspace = true
+tempfile.workspace = true
+
+[lints]
+workspace = true

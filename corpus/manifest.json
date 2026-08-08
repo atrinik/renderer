@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "provenance": "new synthetic MIT fixture; no classic or third-party visual source",
+  "cases": [
+    {
+      "name": "overlap-square",
+      "width": 16,
+      "height": 16,
+      "clock_millis": 1000,
+      "maximum_rgba_channel_difference": 1,
+      "digests": {
+        "rgba8": "7b66e2a3d10a4f0dc174a0ff491cf04c135ed621e60b0df3965a56e94b3f6fab",
+        "semantic_u32le": "280442e7b9b92086a59b0bc3e03152a734affc4b62eba889f350040ffc765fd6",
+        "depth_i16le": "1dfe6b27d6a2c68d89457c6a247546aa7dfce2b2c2478070a8f7a070ddec4e93",
+        "coverage_u8": "65d76ea92f50ee884d139891b800aa21d56b51af9647fb64fecb12ac468f3228"
+      }
+    },
+    {
+      "name": "unaligned-wide",
+      "width": 31,
+      "height": 17,
+      "clock_millis": 1000,
+      "maximum_rgba_channel_difference": 1,
+      "digests": {
+        "rgba8": "045e1b21c60eb8bc7379fbd111f479e7c78b54a07410be3cdf4f89360869d9d9",
+        "semantic_u32le": "352fc36d1c930639940858933331e30377b1c90006b467b856d1a4c20dff4e25",
+        "depth_i16le": "e5a68a55f37a9e2694c216b956901520a0492e4de62722504b439293f20098a1",
+        "coverage_u8": "a8fc4cb70609da7c4a4d2e9998506e6124633ffc0abdcfd6be3329ad6fa27b3b"
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+[package]
+name = "atrinik-render-testkit"
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+
+[dependencies]
+atrinik-render-api.workspace = true
+atrinik-render-resources.workspace = true
+atrinik-scene.workspace = true
+sha2.workspace = true
+
+[lints]
+workspace = true

@@ -11,7 +11,7 @@ sudo apt-get install --no-install-recommends --yes \
   libibus-1.0-dev libpipewire-0.3-dev libpulse-dev libsndio-dev libudev-dev \
   liburing-dev libvulkan-dev libwayland-dev libx11-dev libxcursor-dev \
   libxext-dev libxfixes-dev libxi-dev libxkbcommon-dev libxrandr-dev \
-  libxss-dev libxtst-dev mesa-vulkan-drivers xvfb
+  libxss-dev libxtst-dev mesa-vulkan-drivers ripgrep xvfb
 
 install -d "${RUNNER_TEMP}/bin"
 rustup toolchain install 1.97.1 --profile minimal --component clippy,rustfmt \

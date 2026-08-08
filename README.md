@@ -12,7 +12,8 @@ and editor transactions remain outside this repository.
 
 ## Validate
 
-The pinned baseline is Rust 1.97.1, edition 2024. The aggregate required check
+The pinned baseline is Rust 1.97.1, edition 2024. SDL 3.4.14 is compiled from
+the Cargo-locked source rather than selected from the host. The aggregate required check
 is `Renderer validation`.
 
 ```sh

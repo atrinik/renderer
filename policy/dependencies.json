@@ -6,7 +6,7 @@
     {"name":"naga","version":"30.0.0","license":"MIT OR Apache-2.0","purpose":"offline WGSL validation"},
     {"name":"pollster","version":"1.0.1","license":"Apache-2.0/MIT","purpose":"bounded native GPU initialization"},
     {"name":"sdl3","version":"0.18.4","license":"MIT","purpose":"window and embedded native handles"},
-    {"name":"sha2","version":"0.10.9","license":"MIT OR Apache-2.0","purpose":"resource and corpus identity"},
+    {"name":"sha2","version":"0.11.0","license":"MIT OR Apache-2.0","purpose":"resource and corpus identity"},
     {"name":"tempfile","version":"3.27.0","license":"MIT OR Apache-2.0","purpose":"atomic no-clobber CLI output"},
     {"name":"wgpu","version":"30.0.0","license":"MIT OR Apache-2.0","purpose":"Vulkan and D3D12 rendering"}
   ],

@@ -6,6 +6,27 @@ defines a renderer-neutral scene and API, explicit resource-provider boundary,
 software reference implementation, private wgpu backend, thin SDL3 presentation
 bridge, UI seam, conformance corpus, and `atrinik-render` proof CLI.
 
+## Development model
+
+This renderer is part of Atrinik's agentic next-generation reimplementation and
+improvement of the human-developed Classic presentation. It is fresh
+MIT-licensed Rust/wgpu code—not a mechanical C translation or source port—and
+is developed primarily through Codex-driven workflows under maintainer
+direction, review, provenance controls, tests, and repository validation.
+“Agentic” describes the project's primary current software-development
+workflow; it does not mean that every line or commit is agent-written. Direct
+human-written code contributions are welcome under the same controls.
+
+The source art and world imagery displayed by the renderer are human-authored
+external inputs, not part of the renderer's MIT-licensed code. Atrinik's pixel
+art, graphics, animations, maps, and visual design retain exact creator,
+upstream, license, and notice records. Deterministic rendering, projections,
+transforms, composed frames, and test output are not generative art, and
+renderer tooling must not silently synthesize creative game assets. See the
+[canonical project authorship statement](https://github.com/atrinik/atrinik/issues/331)
+and the [replacement roadmap](https://github.com/atrinik/atrinik/issues/168)
+for the project-wide identity and implementation direction.
+
 No public scene or renderer API exposes SDL3 or wgpu handles. Consumer-specific
 state, filesystem/network discovery, game rules, protocol messages, event loops,
 and editor transactions remain outside this repository.

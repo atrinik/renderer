@@ -9,13 +9,21 @@ bridge, UI seam, conformance corpus, and `atrinik-render` proof CLI.
 ## Development model
 
 This renderer is part of Atrinik's agentic next-generation reimplementation and
-improvement of the human-developed Classic presentation. It is fresh
-MIT-licensed Rust/wgpu code—not a mechanical C translation or source port—and
-is developed primarily through Codex-driven workflows under maintainer
-direction, review, provenance controls, tests, and repository validation.
+improvement of the human-developed Classic presentation. The current foundation
+is independently implemented MIT-licensed Rust/wgpu code rather than a
+mechanical C translation or source port, and is developed primarily through
+Codex-driven workflows under maintainer direction, review, provenance controls,
+tests, and repository validation.
 “Agentic” describes the project's primary current software-development
 workflow; it does not mean that every line or commit is agent-written. Direct
 human-written code contributions are welcome under the same controls.
+
+Future exact historical reuse is evidence-gated by the
+[local provenance record](PROVENANCE.md) and
+[canonical grant registry](https://github.com/atrinik/atrinik/blob/main/docs/PROVENANCE.md):
+admitted destination material may be consulted and MIT-relicensed, while every
+uncovered portion remains excluded and the Classic repository remains
+GPL-distributed.
 
 The source art and world imagery displayed by the renderer are human-authored
 external inputs, not part of the renderer's MIT-licensed code. Atrinik's pixel

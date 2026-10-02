@@ -1,28 +1,76 @@
 {
   "packages": [
-    {"id":"path+file:///renderer#atrinik-render@0.1.0","name":"atrinik-render","version":"0.1.0","license":"MIT","source":null},
-    {"id":"registry+https://github.com/rust-lang/crates.io-index#bytemuck@1.26.0","name":"bytemuck","version":"1.26.0","license":"Zlib OR Apache-2.0 OR MIT","source":"registry+https://github.com/rust-lang/crates.io-index"},
-    {"id":"registry+https://github.com/rust-lang/crates.io-index#naga@30.1.0","name":"naga","version":"30.1.0","license":"MIT OR Apache-2.0","source":"registry+https://github.com/rust-lang/crates.io-index"},
-    {"id":"registry+https://github.com/rust-lang/crates.io-index#pollster@1.1.0","name":"pollster","version":"1.1.0","license":"Apache-2.0/MIT","source":"registry+https://github.com/rust-lang/crates.io-index"},
-    {"id":"registry+https://github.com/rust-lang/crates.io-index#sdl3@0.18.8","name":"sdl3","version":"0.18.8","license":"MIT","source":"registry+https://github.com/rust-lang/crates.io-index"},
-    {"id":"registry+https://github.com/rust-lang/crates.io-index#sha2@0.11.1","name":"sha2","version":"0.11.1","license":"MIT OR Apache-2.0","source":"registry+https://github.com/rust-lang/crates.io-index"},
-    {"id":"registry+https://github.com/rust-lang/crates.io-index#tempfile@3.28.0","name":"tempfile","version":"3.28.0","license":"MIT OR Apache-2.0","source":"registry+https://github.com/rust-lang/crates.io-index"},
-    {"id":"registry+https://github.com/rust-lang/crates.io-index#wgpu@30.2.0","name":"wgpu","version":"30.2.0","license":"MIT OR Apache-2.0","source":"registry+https://github.com/rust-lang/crates.io-index"},
-    {"id":"registry+https://github.com/rust-lang/crates.io-index#transitive@2.0.0","name":"transitive","version":"2.0.0","license":"BSD-2-Clause","source":"registry+https://github.com/rust-lang/crates.io-index"}
+    {
+      "id":"path+file:///renderer#atrinik-render@0.1.0","name":"atrinik-render","version":"0.1.0","license":"MIT","source":null,
+      "dependencies":[
+        {"name":"atrinik-render-wgpu","source":null,"kind":null},
+        {"name":"tempfile","source":"registry+https://github.com/rust-lang/crates.io-index","kind":null}
+      ]
+    },
+    {
+      "id":"path+file:///renderer#atrinik-render-wgpu@0.1.0","name":"atrinik-render-wgpu","version":"0.1.0","license":"MIT","source":null,
+      "dependencies":[
+        {"name":"bytemuck","source":"registry+https://github.com/rust-lang/crates.io-index","kind":null},
+        {"name":"naga","source":"registry+https://github.com/rust-lang/crates.io-index","kind":"dev"},
+        {"name":"pollster","source":"registry+https://github.com/rust-lang/crates.io-index","kind":null},
+        {"name":"wgpu","source":"registry+https://github.com/rust-lang/crates.io-index","kind":null}
+      ]
+    },
+    {
+      "id":"path+file:///renderer#atrinik-render-sdl3@0.1.0","name":"atrinik-render-sdl3","version":"0.1.0","license":"MIT","source":null,
+      "dependencies":[
+        {"name":"sdl3","source":"registry+https://github.com/rust-lang/crates.io-index","kind":null}
+      ]
+    },
+    {
+      "id":"path+file:///renderer#atrinik-render-resources@0.1.0","name":"atrinik-render-resources","version":"0.1.0","license":"MIT","source":null,
+      "dependencies":[
+        {"name":"sha2","source":"registry+https://github.com/rust-lang/crates.io-index","kind":null}
+      ]
+    },
+    {"id":"registry+https://github.com/rust-lang/crates.io-index#bytemuck@1.26.0","name":"bytemuck","version":"1.26.0","license":"Zlib OR Apache-2.0 OR MIT","source":"registry+https://github.com/rust-lang/crates.io-index","dependencies":[]},
+    {"id":"registry+https://github.com/rust-lang/crates.io-index#naga@30.1.0","name":"naga","version":"30.1.0","license":"MIT OR Apache-2.0","source":"registry+https://github.com/rust-lang/crates.io-index","dependencies":[]},
+    {"id":"registry+https://github.com/rust-lang/crates.io-index#pollster@1.1.0","name":"pollster","version":"1.1.0","license":"Apache-2.0/MIT","source":"registry+https://github.com/rust-lang/crates.io-index","dependencies":[]},
+    {"id":"registry+https://github.com/rust-lang/crates.io-index#sdl3@0.18.8","name":"sdl3","version":"0.18.8","license":"MIT","source":"registry+https://github.com/rust-lang/crates.io-index","dependencies":[]},
+    {"id":"registry+https://github.com/rust-lang/crates.io-index#sha2@0.11.1","name":"sha2","version":"0.11.1","license":"MIT OR Apache-2.0","source":"registry+https://github.com/rust-lang/crates.io-index","dependencies":[]},
+    {"id":"registry+https://github.com/rust-lang/crates.io-index#tempfile@3.28.0","name":"tempfile","version":"3.28.0","license":"MIT OR Apache-2.0","source":"registry+https://github.com/rust-lang/crates.io-index","dependencies":[]},
+    {"id":"registry+https://github.com/rust-lang/crates.io-index#wgpu@30.2.0","name":"wgpu","version":"30.2.0","license":"MIT OR Apache-2.0","source":"registry+https://github.com/rust-lang/crates.io-index","dependencies":[]},
+    {"id":"registry+https://github.com/rust-lang/crates.io-index#transitive@2.0.0","name":"transitive","version":"2.0.0","license":"Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT","source":"registry+https://github.com/rust-lang/crates.io-index","dependencies":[]}
   ],
-  "workspace_members": ["path+file:///renderer#atrinik-render@0.1.0"],
+  "workspace_members": [
+    "path+file:///renderer#atrinik-render@0.1.0",
+    "path+file:///renderer#atrinik-render-resources@0.1.0",
+    "path+file:///renderer#atrinik-render-sdl3@0.1.0",
+    "path+file:///renderer#atrinik-render-wgpu@0.1.0"
+  ],
   "resolve": {
     "nodes": [
       {
         "id":"path+file:///renderer#atrinik-render@0.1.0",
         "deps": [
+          {"pkg":"path+file:///renderer#atrinik-render-wgpu@0.1.0"},
+          {"pkg":"registry+https://github.com/rust-lang/crates.io-index#tempfile@3.28.0"}
+        ]
+      },
+      {
+        "id":"path+file:///renderer#atrinik-render-wgpu@0.1.0",
+        "deps": [
           {"pkg":"registry+https://github.com/rust-lang/crates.io-index#bytemuck@1.26.0"},
           {"pkg":"registry+https://github.com/rust-lang/crates.io-index#naga@30.1.0"},
           {"pkg":"registry+https://github.com/rust-lang/crates.io-index#pollster@1.1.0"},
-          {"pkg":"registry+https://github.com/rust-lang/crates.io-index#sdl3@0.18.8"},
-          {"pkg":"registry+https://github.com/rust-lang/crates.io-index#sha2@0.11.1"},
-          {"pkg":"registry+https://github.com/rust-lang/crates.io-index#tempfile@3.28.0"},
           {"pkg":"registry+https://github.com/rust-lang/crates.io-index#wgpu@30.2.0"}
+        ]
+      },
+      {
+        "id":"path+file:///renderer#atrinik-render-sdl3@0.1.0",
+        "deps": [
+          {"pkg":"registry+https://github.com/rust-lang/crates.io-index#sdl3@0.18.8"}
+        ]
+      },
+      {
+        "id":"path+file:///renderer#atrinik-render-resources@0.1.0",
+        "deps": [
+          {"pkg":"registry+https://github.com/rust-lang/crates.io-index#sha2@0.11.1"}
         ]
       }
     ]

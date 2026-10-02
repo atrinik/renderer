@@ -1,6 +1,7 @@
 {
   "schema_version": 2,
   "allowed_spdx": ["Apache-2.0", "BSD-2-Clause", "ISC", "MIT", "Unicode-3.0", "Zlib"],
+  "allowed_spdx_exceptions": [],
   "allowed_registry_sources": ["registry+https://github.com/rust-lang/crates.io-index"],
   "direct_dependencies": [
     {"name":"bytemuck","purpose":"checked vertex byte views"},

@@ -14,6 +14,7 @@ cargo run --locked --quiet --package atrinik-render -- --version
 
 tools/check-architecture.sh
 tools/check-dependencies.sh
+tools/test-check-dependencies.sh
 tools/check-provenance.sh
 jq empty corpus/*.json policy/*.json
 

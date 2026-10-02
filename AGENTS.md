@@ -61,9 +61,10 @@
   executable renderer code authored/reviewed/versioned here, never delivered
   arbitrarily by a server.
 - Pin Rust/MSRV, `Cargo.lock`, wgpu/SDL acquisition, supported backends, and
-  fallback policy. Every performance change defines representative before/
-  after budgets for CPU/GPU time, uploads, allocations, caches, queues, and
-  recovery. Bound metrics and keep disabled instrumentation cheap.
+  fallback policy. Keep compatible registry requirements in `Cargo.toml`; the
+  locked graph remains the exact build input. Every performance change defines
+  representative before/after budgets for CPU/GPU time, uploads, allocations,
+  caches, queues, and recovery. Bound metrics and keep disabled instrumentation cheap.
 - `atrinik/atrinik#168` is the program roadmap; local issues/milestones own
   delivery. Do not copy the M1-M6 schedule here.
 - Run the real aggregate contract:

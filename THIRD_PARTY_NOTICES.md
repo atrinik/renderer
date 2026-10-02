@@ -1,7 +1,9 @@
 # Third-party notices
 
-Rust dependencies retain their licenses as recorded in
-`policy/dependencies.json`, Cargo metadata, and the release SBOM.
+Rust dependencies retain their licenses as reported by Cargo metadata and the
+release SBOM. `policy/dependencies.json` records the approved SPDX identifiers,
+registry sources, and direct-dependency purposes; `Cargo.lock` fixes the exact
+resolved versions and checksums.
 
 The raw SDL window handle adapter in `atrinik-render-sdl3` is an independently
 adapted form of the public `sdl3` 0.18.4

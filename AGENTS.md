@@ -79,6 +79,11 @@
   consumer smoke builds, and supported platform/rendering proofs. Record
   adapter/backend/driver/limits for GPU evidence; never imply absent GPU
   coverage passed.
+- `Dependency review` is a separate required security check for PRs to `main`:
+  introduced high/critical vulnerabilities fail across runtime, development,
+  and unknown scopes. Preserve the `Renderer validation` aggregate and
+  synchronize required check names with `atrinik/github-settings` policy;
+  required human approvals remain zero.
 - Wrapper replacement adapters are not available yet. Use repository
   validation and released consumer contracts, not unaudited source copies or
   Classic runtime fallbacks. Commits/PR titles use Conventional Commits;

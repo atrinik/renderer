@@ -94,6 +94,8 @@
 The seven public libraries are selected by `policy/crate-release.json`; the
 CLI is not a registry package. Run the packaged-content version gate and
 credential-free preparation before source-release publication. Trusted publishing
-uploads verified release archives without builds. See
+uploads verified release archives without builds. The inert signer attests the
+manifest; publication requires its exact successful main workflow invocation
+and a durable atomic upload intent before any registry PUT. See
 [crate delivery](docs/CRATE-RELEASE.md); Cargo and source-release versions are
 independent, and initial registry ownership requires owner activation.

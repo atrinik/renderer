@@ -52,6 +52,39 @@ immutable releases were misconfigured, a mutable source release can exist, but
 its crate publication fails closed. Preserve that release and its evidence for
 explicit owner review; do not automatically delete, rewrite or replace assets.
 
+## Attested evidence and durable upload intent
+
+A separate signer job verifies the complete prepared payload, then uses the
+pinned official `actions/attest-build-provenance` action to attest the exact
+`crate-release.json` bytes. It runs no Cargo or package hook and holds no release
+write token. The source finalizer waits for this signer before creating the
+source release.
+
+Before publication, the helper retrieves bounded official attestation bundles,
+including GitHub's compressed storage responses, without forwarding credentials
+to storage. The preinstalled official GitHub CLI (2.68 or newer) verifies their
+signatures in a fresh configuration without registry or GitHub write credentials.
+Certificate checks bind the subject digest, repository ID, protected `main`,
+source and workflow revisions, GitHub-hosted runner, and exact source workflow
+run and attempt. That producing invocation must succeed; unrelated successful
+runs cannot authorize publication.
+
+Before each registry PUT, the publisher atomically creates and reads back
+`refs/tags/crate-upload-intent/NAME/VERSION`, recording the archive and manifest
+digests, source release, revision and verified producer. A preexisting intent
+blocks another automatic attempt even when public registry reads still report
+absence. The publisher's contents-write permission serves this reservation;
+`GH_INTENT_TOKEN` is exposed only to the upload step and is stripped before
+Cargo or signature-verifier subprocesses.
+
+Retain an intent after ambiguous upload results. The owner must establish whether
+the registry accepted the write; public absence alone is insufficient. Only
+explicit owner recovery after authoritative confirmation of no accepted write
+may remove the reservation and authorize another attempt. A matching published
+coordinate retains its reservation permanently. Bootstrap uses the same gate and
+a separate authenticated owner GitHub session for the intent; the crate token
+never reaches the GitHub CLI.
+
 ## Initial ownership and activation
 
 All seven names require an owner-run initial crates.io publication with a

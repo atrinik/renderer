@@ -17,8 +17,24 @@ independent of the semantic-release source tag. Change the workspace version and
 all exact internal dependency requirements together whenever packaged content
 changes after publication. Required validation compares packaged content with
 the accepted base and rejects changed content at an unchanged published version.
-A source-only release may reuse an already published package only when its
-archive checksum matches exactly.
+For already published coordinates, preparation packages each candidate separately
+against the production registry twice. It compares the complete inventory and
+canonical contents, including `Cargo.lock`, with the original owning archive;
+only the candidate's VCS revision is excluded from that content comparison.
+The original archive must match its owning source provenance and the registry
+API, index and downloaded bytes before reuse. Missing, conflicting or unresolved
+registry state stops preparation.
+
+The standalone graph verifier receives those exact original archives alongside
+twice-reproduced new packages. Only new coordinates enter Cargo's packaging
+overlay, so a source-only commit cannot replace published dependency checksums
+with checksums of regenerated archives. Existing coordinates remain owned by
+the original release and are omitted from the new manifest and assets. A genuine
+content or lockfile change at an existing version still requires a version bump.
+Explicit `--source-package NAME` selections require `publish = false`; they join
+the new package graph for verification and remain source assets without registry
+ownership. Maintenance and offline validation continue to verify their complete
+current graph without consulting main's coordinate ownership.
 
 `tools/crate_prepare.py` runs without registry credentials. It prepares the
 allowlisted Cargo archives, checks their normalized manifests and dependency

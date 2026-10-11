@@ -19,7 +19,6 @@ crates=(
   atrinik-render-testkit
   atrinik-render-wgpu
   atrinik-render-sdl3
-  atrinik-render
   atrinik-render-ui
 )
 

@@ -5,6 +5,8 @@ repository=$(git rev-parse --show-toplevel)
 cd "${repository}"
 
 test "$(rustc --version | cut -d' ' -f2)" = 1.97.1
+python3 -m unittest tools.test_crate_release
+python3 tools/crate_prepare.py check-version --base "${CRATE_RELEASE_BASE:-$(git rev-parse HEAD)}"
 cargo fmt --all --check
 cargo clippy --locked --workspace --all-targets --all-features -- -D warnings
 cargo test --locked --workspace --all-targets --all-features

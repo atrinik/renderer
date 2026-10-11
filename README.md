@@ -76,3 +76,8 @@ rm /tmp/atrinik-proof.rgba
 
 See [architecture and limits](docs/ARCHITECTURE.md), [GPU lifecycle](docs/GPU-LIFECYCLE.md),
 [corpus policy](corpus/README.md), and [provenance](PROVENANCE.md).
+
+The seven renderer libraries publish to crates.io from verified source-release
+archives. Cargo versions remain independent of source tags; see
+[crate release and initial ownership](docs/CRATE-RELEASE.md). The diagnostics CLI
+remains a GitHub release application.

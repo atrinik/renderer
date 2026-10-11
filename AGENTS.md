@@ -83,3 +83,12 @@
   validation and released consumer contracts, not unaudited source copies or
   Classic runtime fallbacks. Commits/PR titles use Conventional Commits;
   semantic-release owns coherent releases/tags.
+
+## Registry delivery
+
+The seven public libraries are selected by `policy/crate-release.json`; the
+CLI is not a registry package. Run the packaged-content version gate and
+credential-free preparation before source-release publication. Trusted publishing
+uploads verified release archives without builds. See
+[crate delivery](docs/CRATE-RELEASE.md); Cargo and source-release versions are
+independent, and initial registry ownership requires owner activation.

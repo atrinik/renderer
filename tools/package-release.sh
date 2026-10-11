@@ -14,7 +14,7 @@ if [[ -e ${output} ]]; then
   echo "release output already exists: ${output}" >&2
   exit 1
 fi
-install -d "${output}/crates"
+install -d "${output}"
 target_directory=$(cargo metadata --locked --offline --no-deps --format-version 1 \
   | jq -r '.target_directory')
 
@@ -22,12 +22,20 @@ archive="atrinik-renderer-${version}.tar.gz"
 git archive --format=tar --prefix="atrinik-renderer-${version}/" HEAD \
   | gzip -n >"${output}/${archive}"
 
-cargo package --locked --offline --workspace --allow-dirty --no-verify
-cp "${target_directory}"/package/*.crate "${output}/crates/"
-tools/verify-packages.sh "${output}/crates"
+prepare_options=()
+if [[ $# -lt 2 ]]; then
+  prepare_options+=(--dry-run)
+  source_tag=v0.0.0
+else
+  source_tag="v${version}"
+fi
+python3 tools/crate_prepare.py prepare "${prepare_options[@]}" \
+  --source-tag "${source_tag}" --output "$(realpath "${output}")" \
+  --archives "$(realpath "${output}")"
 cargo build --locked --release --package atrinik-render --features sdl3
 cp "${target_directory}/release/atrinik-render" "${output}/"
-cp -R corpus "${output}/"
+tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner \
+  -cf - corpus | gzip -n >"${output}/corpus.tar.gz"
 cp LICENSE PROVENANCE.md THIRD_PARTY_NOTICES.md "${output}/"
 
 SYFT_CHECK_FOR_APP_UPDATE=false syft dir:. \
@@ -46,14 +54,14 @@ checksums=$(mktemp /tmp/atrinik-renderer-checksums.XXXXXX)
 trap 'rm -f -- "${checksums}"' EXIT
 (
   cd "${output}"
-  find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum
+  find . -maxdepth 1 -type f ! -name SHA256SUMS -printf '%f\0' \
+    | sort -z | xargs -0 sha256sum
 ) >"${checksums}"
 mv "${checksums}" "${output}/SHA256SUMS"
 
-for crate in atrinik-render atrinik-render-api atrinik-render-resources \
-  atrinik-render-sdl3 atrinik-render-testkit atrinik-render-ui \
-  atrinik-render-wgpu atrinik-scene; do
-  test -s "${output}/crates/${crate}-0.1.0.crate"
-done
-tar -tf "${output}/crates/atrinik-render-wgpu-0.1.0.crate" \
-  | grep -Fx 'atrinik-render-wgpu-0.1.0/src/shader.wgsl' >/dev/null
+crate_version=$(cargo metadata --locked --offline --no-deps --format-version 1 \
+  | jq -er '.packages[] | select(.name == "atrinik-render-wgpu") | .version')
+if [[ -f ${output}/atrinik-render-wgpu-${crate_version}.crate ]]; then
+  tar -tf "${output}/atrinik-render-wgpu-${crate_version}.crate" \
+    | grep -Fx "atrinik-render-wgpu-${crate_version}/src/shader.wgsl" >/dev/null
+fi

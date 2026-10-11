@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "repository": "atrinik/renderer",
+  "repository_id": "1327106998",
+  "workflow": "publish-crate.yml",
+  "environment": "crates-io-release",
+  "toolchain": "1.97.1",
+  "crates": [
+    {
+      "name": "atrinik-scene",
+      "path": "crates/atrinik-scene"
+    },
+    {
+      "name": "atrinik-render-resources",
+      "path": "crates/atrinik-render-resources"
+    },
+    {
+      "name": "atrinik-render-api",
+      "path": "crates/atrinik-render-api"
+    },
+    {
+      "name": "atrinik-render-ui",
+      "path": "crates/atrinik-render-ui"
+    },
+    {
+      "name": "atrinik-render-testkit",
+      "path": "crates/atrinik-render-testkit"
+    },
+    {
+      "name": "atrinik-render-wgpu",
+      "path": "crates/atrinik-render-wgpu"
+    },
+    {
+      "name": "atrinik-render-sdl3",
+      "path": "crates/atrinik-render-sdl3"
+    }
+  ],
+  "historical": [],
+  "required_checks": [
+    "Renderer validation"
+  ]
+}

@@ -6,6 +6,12 @@ The public renderer family is `atrinik-scene`, `atrinik-render-resources`,
 `policy/crate-release.json` is authoritative. `atrinik-render` stays a GitHub
 application artifact and has `publish = false`.
 
+Only source releases from `main` may own registry coordinates. Maintenance
+branches still prepare and verify the complete package graph, then omit the
+selected crate archives and emit an empty publication manifest. Their source
+and application releases continue independently without reserving Cargo
+versions for the main-only publisher.
+
 Cargo packages share the workspace version, initially `0.1.0`. This version is
 independent of the semantic-release source tag. Change the workspace version and
 all exact internal dependency requirements together whenever packaged content

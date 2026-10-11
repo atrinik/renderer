@@ -100,14 +100,14 @@ jobs:
         with:
           name: prepared-renderer-release-${{ github.sha }}
           path: build/release
+      - name: Install pinned release dependencies without lifecycle scripts
+        run: >-
+          npm install --prefix "${RUNNER_TEMP}/semantic-release"
+          --ignore-scripts --no-audit --no-fund --package-lock=false
+          semantic-release@25.0.9 @semantic-release/exec@7.1.0 @semantic-release/github@12.0.6
+          conventional-changelog-conventionalcommits@9.3.1
       - name: Analyze commits, verify prepared evidence, and publish
         env:
           GH_TOKEN: ${{ github.token }}
           GH_READ_TOKEN: ${{ github.token }}
-        run: >-
-          npx --yes
-          --package=semantic-release@25.0.9
-          --package=@semantic-release/exec@7.1.0
-          --package=@semantic-release/github@12.0.6
-          --package=conventional-changelog-conventionalcommits@9.3.1
-          semantic-release
+        run: '"${RUNNER_TEMP}/semantic-release/node_modules/.bin/semantic-release"'

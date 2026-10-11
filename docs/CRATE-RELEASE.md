@@ -36,6 +36,16 @@ packages are idempotent; a conflicting checksum stops publication. Hourly
 reconciliation revisits eligible releases to recover interrupted dispatches or
 index propagation delays.
 
+## Immutable source-release ownership
+
+Repository governance enables immutable GitHub releases before activation. The
+publisher and owner bootstrap inspect the public source release and require
+`immutable: true` before any registry write. The source finalizer verifies the
+prepared assets without querying administrator-only repository settings. If
+immutable releases were misconfigured, a mutable source release can exist, but
+its crate publication fails closed. Preserve that release and its evidence for
+explicit owner review; do not automatically delete, rewrite or replace assets.
+
 ## Initial ownership and activation
 
 All seven names require an owner-run initial crates.io publication with a
